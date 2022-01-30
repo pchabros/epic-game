@@ -1,11 +1,25 @@
+Session.vim
 node_modules
 .env
 coverage
 coverage.json
 typechain
 
-#Hardhat files
+# Hardhat files
 cache
 artifacts
 
-Session.vim
+# React files
+/node_modules
+/.pnp
+.pnp.js
+/coverage
+/build
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

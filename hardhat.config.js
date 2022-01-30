@@ -16,7 +16,7 @@ module.exports = {
       accounts: [process.env.PRIVATE_KEY],
     },
   },
-  /* paths: {
+  paths: {
     artifacts: "./client/src/artifacts",
-  }, */
+  },
 };
