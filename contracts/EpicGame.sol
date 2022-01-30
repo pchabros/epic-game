@@ -23,6 +23,10 @@ contract EpicGame is ERC721 {
   Character boss;
   mapping(uint256 => Character) public mintedCharacters;
   mapping(address => uint256) public addressToTokenId;
+
+  event CharacterNFTMinted(address sender, uint256 tokenId, uint256 characterIndex);
+  event AttackFinished(uint playerHp, uint bossHp);
+
   constructor(Character[] memory _characters, Character memory _boss) ERC721("LeagueOfLegends", "LOL") {
     boss = _boss;
     logCharacterInfo(boss);
@@ -52,7 +56,7 @@ contract EpicGame is ERC721 {
         '{ "trait_type": "Defense", "value": ', character.defense.toString(), ' },',
         '{ "trait_type": "Damage", "value": ', character.damage.toString(), ' },',
         '{ "trait_type": "Critical Attack Chance", "value": ', character.critChance.toString(), ' },',
-        '{ "trait_type": "Critical Attack Damage", "value": ', character.critDamage.toString(), ' },',
+        '{ "trait_type": "Critical Attack Damage", "value": ', character.critDamage.toString(), ' }',
       '],', 
     '}'));
     string memory output = string(
@@ -68,6 +72,7 @@ contract EpicGame is ERC721 {
     console.log("Minted %s NFT with token ID %s", character.name, newTokenId);
     addressToTokenId[msg.sender] = newTokenId;
     _tokenIds.increment();
+    emit CharacterNFTMinted(msg.sender, newTokenId, _characterIndex);
   }
   function attackDamage(Character memory _attacker, Character memory _attacked) internal view returns(uint) {
     bool isCritical = _attacker.critChance > Random.integer(100);
@@ -76,12 +81,17 @@ contract EpicGame is ERC721 {
     damageDealt = damageDealt > _attacked.hp ? _attacked.hp : damageDealt;
     return damageDealt;
   }
-  function attackBoss() public {
+  modifier gameNotOver {
+    require(boss.hp > 0, "The Boss is already dead!");
     uint256 senderTokenId = addressToTokenId[msg.sender];
     require(senderTokenId != 0, "You have to mint character NFT to play this game!");
-    require(boss.hp > 0, "The Boss is already dead!");
-    Character storage senderCharacter = mintedCharacters[senderTokenId];
+    Character memory senderCharacter = mintedCharacters[senderTokenId];
     require(senderCharacter.hp > 0, "Your character is dead!");
+    _;
+  }
+  function attackBoss() public gameNotOver {
+    uint256 senderTokenId = addressToTokenId[msg.sender];
+    Character storage senderCharacter = mintedCharacters[senderTokenId];
     uint characterAttackDamage = attackDamage(senderCharacter, boss);
     boss.hp -= characterAttackDamage;
     console.log("%s attacked %s with %s damage!", senderCharacter.name, boss.name, characterAttackDamage);
@@ -90,5 +100,17 @@ contract EpicGame is ERC721 {
     senderCharacter.hp -= bossAttackDamage;
     console.log("%s attacked %s with %s damage!", boss.name, senderCharacter.name, bossAttackDamage);
     console.log("%s hp: %s/%s", senderCharacter.name, senderCharacter.hp, senderCharacter.maxHp);
+    emit AttackFinished(senderCharacter.hp, boss.hp);
+  }
+  function getSenderCharacter() public view gameNotOver returns(Character memory) {
+    uint256 senderTokenId = addressToTokenId[msg.sender];
+    Character memory senderCharacter = mintedCharacters[senderTokenId];
+    return senderCharacter;
+  }
+  function getAllCharacters() public view returns(Character[] memory) {
+    return characters;
+  }
+  function getBoss() public view returns(Character memory) {
+    return boss;
   }
 }
