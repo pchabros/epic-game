@@ -1,8 +1,8 @@
 const characters = [
   {
     index: 0,
-    name: "Annie",
-    avatar: "https://images.contentstack.io/v3/assets/blt731acb42bb3d1659/blt28c708665427aef6/5db05fa89481396d6bdd01a6/RiotX_ChampionList_annie.jpg?quality=90&width=250",
+    name: "Veigar",
+    avatar: "https://imgur.com/F8A7Vim",
     hp: 100,
     maxHp: 100,
     defense: 30,
@@ -12,8 +12,8 @@ const characters = [
   },
   {
     index: 1,
-    name: "Corki",
-    avatar: "https://images.contentstack.io/v3/assets/blt731acb42bb3d1659/bltdd918c4d0a86347a/5db05fb1df78486c826dccee/RiotX_ChampionList_corki.jpg?quality=90&width=250",
+    name: "Master Yi",
+    avatar: "https://imgur.com/a3G19Ok",
     hp: 90,
     maxHp: 90,
     defense: 32,
@@ -24,7 +24,7 @@ const characters = [
   {
     index: 2,
     name: "Malphite",
-    avatar: "https://images.contentstack.io/v3/assets/blt731acb42bb3d1659/blt4d3b4a7e4c44ced7/5db05fdeadc8656c7d24e7e2/RiotX_ChampionList_malaphite.jpg?quality=90&width=250",
+    avatar: "https://imgur.com/z7cRWMa",
     hp: 140,
     maxHp: 140,
     defense: 60,
@@ -36,7 +36,7 @@ const characters = [
 const boss = {
   index: 2,
   name: "Baron",
-  avatar: "https://static.wikia.nocookie.net/leagueoflegends/images/1/15/Baron_Nashor_OriginalSkin.jpg/revision/latest/scale-to-width-down/700?cb=20151202202626",
+  avatar: "https://imgur.com/5fXSnKM",
   hp: 1000,
   maxHp: 1000,
   defense: 50,
@@ -53,6 +53,8 @@ const main = async () => {
 
   let txn = await gameContract.mintCharacterNFT(0);
   await txn.wait();
+  let tokenURI = await gameContract.tokenURI(1);
+  console.log("Token URI:", tokenURI);
   await gameContract.attackBoss();
   await gameContract.attackBoss();
   await gameContract.attackBoss();
