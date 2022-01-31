@@ -4,7 +4,7 @@ const characters = [
   {
     index: 0,
     name: "Veigar",
-    avatar: "https://imgur.com/F8A7Vim",
+    avatar: "https://imgur.com/F8A7Vim.jpeg",
     hp: 100,
     maxHp: 100,
     defense: 30,
@@ -15,7 +15,7 @@ const characters = [
   {
     index: 1,
     name: "Master Yi",
-    avatar: "https://imgur.com/a3G19Ok",
+    avatar: "https://imgur.com/a3G19Ok.jpeg",
     hp: 90,
     maxHp: 90,
     defense: 32,
@@ -26,7 +26,7 @@ const characters = [
   {
     index: 2,
     name: "Malphite",
-    avatar: "https://imgur.com/z7cRWMa",
+    avatar: "https://imgur.com/z7cRWMa.jpeg",
     hp: 140,
     maxHp: 140,
     defense: 60,
@@ -36,9 +36,9 @@ const characters = [
   },
 ];
 const boss = {
-  index: 2,
+  index: 9,
   name: "Baron",
-  avatar: "https://imgur.com/5fXSnKM",
+  avatar: "https://imgur.com/5fXSnKM.jpeg",
   hp: 1000,
   maxHp: 1000,
   defense: 50,
