@@ -19,7 +19,7 @@ const Container = styled.div`
 
 const App = () => {
   const [connectedAccount, setConnectedAccount] = useState();
-  const [accountNFT, setAccountNFT] = useState();
+  const [accountHasNFT, setAccountHasNFT] = useState();
   const [gameContract, setGameContract] = useState();
   const initializeContract = async () => {
     try {
@@ -40,23 +40,20 @@ const App = () => {
   useEffect(() => {
     const getAccountNFT = async () => {
       if (gameContract) try {
-        setAccountNFT(await gameContract.getSenderCharacter());
+        setAccountHasNFT(await gameContract.senderHasNFT());
       } catch({ error }) {
         console.log(error.message);
       }
     }
-    getAccountNFT();
-  }, [gameContract]);
-  useEffect(() => {
-    console.log(accountNFT);
-  }, [accountNFT]);
+    if (connectedAccount) getAccountNFT();
+  }, [connectedAccount, gameContract]);
   return (
     <Container className="App">
       <Header />
       {!connectedAccount && <ConnectWallet onConnect={setConnectedAccount} />}
       <ConnectedAccount address={connectedAccount} />
-      {connectedAccount && !accountNFT && <SelectCharacter gameContract={gameContract} />}
-      {accountNFT && <Arena />}
+      {connectedAccount && !accountHasNFT && <SelectCharacter gameContract={gameContract} setAccountHasNFT={setAccountHasNFT} />}
+      {connectedAccount && accountHasNFT && <Arena gameContract={gameContract} />}
     </Container>
   );
 }

@@ -1,6 +1,9 @@
 import CharacterCard from "./CharacterCard";
+import ScaleLoader from "react-spinners/ScaleLoader";
 import styled from "styled-components";
-import { useState } from "react";
+import { Modal } from "./UI";
+import { formatCharacterData } from "../utils";
+import { useEffect, useState } from "react";
 
 const Div = styled.div`
   display: flex;
@@ -18,26 +21,59 @@ const Cards = styled.div`
   display: flex;
 `;
 
-
-const SelectCharacter = ({ gameContract }) => {
+const SelectCharacter = ({ gameContract, setAccountHasNFT }) => {
   const [characters, setCharacters] = useState([]);
-  useState(() => {
+  const [loading, setLoading] = useState(false);
+  const mintCharacterNFT = (characterId) => async () => {
+    try {
+      if (gameContract) {
+        setLoading(true);
+        const txn = await gameContract.mintCharacterNFT(characterId);
+        await txn.wait();
+      } 
+    } catch(error) {
+      console.log(error);
+    }
+  }
+  useEffect(() => {
     const getAllCharacters = async () => {
       try {
-        setCharacters(await gameContract.getAllCharacters());
+        if (gameContract) {
+          const charactersRaw = await gameContract.getAllCharacters();
+          const charactersFormatted = charactersRaw.map(formatCharacterData);
+          setCharacters(charactersFormatted);
+        }
       } catch({ error }) {
         console.log(error.message);
       }
     }
     getAllCharacters();
-  }, []);
+  }, [gameContract]);
+  useEffect(() => {
+    const onCharacterMinted = (minted) => {
+      setAccountHasNFT(minted);
+      setLoading(false);
+    }
+    if (gameContract) gameContract.on("CharacterNFTMinted", onCharacterMinted);
+    return () => {
+      if (gameContract) gameContract.off("CharacterNFTMinted", onCharacterMinted);
+    }
+  }, [gameContract, setAccountHasNFT]);
   return (
-    <Div>
-      <Title>Select Character</Title>
-      <Cards>
-        {characters.map((character, i) => <CharacterCard key={i} data={character} />)}
-      </Cards>
-    </Div>
+    <>
+      <Div>
+        <Title>Select Character</Title>
+        <Cards>
+          {characters.map((character, i) => {
+            return <CharacterCard key={i} data={character} onSelect={mintCharacterNFT(i)} />;
+          })}
+        </Cards>
+      </Div>
+      <Modal isOpen={loading}>
+        <h3>Minting Champion NFT...</h3>
+        <ScaleLoader color="#17C3B2" loading={loading} />
+     </Modal>
+    </>
   )
 }
 

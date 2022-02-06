@@ -22,25 +22,28 @@ const Bar = styled.div`
   background-color: #FFCB77;
   border-radius: 3em;
   height: 10px;
-  width: ${({ value }) => value}%;
+  width: ${({ width }) => width}%;
 `;
 
 const Value = styled.span`
   min-width: 20px;
-  margin-left: 10px;
 `
 
-const Stat = ({ name, value }) => {
+const Stat = ({ name, value, max }) => {
   const icon = icons[name];
+  const width = value / max * 100;
   return (
     <Div>
       {icon()}
       <BarDiv>
-        <Bar value={value}/>
+        <Bar width={width} />
       </BarDiv>
       <Value>{value}</Value>
     </Div>
   )
 }
 
+Stat.defaultProps = {
+  max: 100,
+}
 export default Stat;

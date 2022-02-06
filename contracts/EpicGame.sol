@@ -24,7 +24,7 @@ contract EpicGame is ERC721 {
   mapping(uint256 => Character) public mintedCharacters;
   mapping(address => uint256) public addressToTokenId;
 
-  event CharacterNFTMinted(address sender, uint256 tokenId, uint256 characterIndex);
+  event CharacterNFTMinted(bool minted);
   event AttackFinished(uint playerHp, uint bossHp);
 
   constructor(Character[] memory _characters, Character memory _boss) ERC721("LeagueOfLegends", "LOL") {
@@ -72,7 +72,7 @@ contract EpicGame is ERC721 {
     console.log("Minted %s NFT with token ID %s", character.name, newTokenId);
     addressToTokenId[msg.sender] = newTokenId;
     _tokenIds.increment();
-    emit CharacterNFTMinted(msg.sender, newTokenId, _characterIndex);
+    emit CharacterNFTMinted(true);
   }
   function attackDamage(Character memory _attacker, Character memory _attacked) internal view returns(uint) {
     bool isCritical = _attacker.critChance > Random.integer(100);
@@ -101,6 +101,10 @@ contract EpicGame is ERC721 {
     console.log("%s attacked %s with %s damage!", boss.name, senderCharacter.name, bossAttackDamage);
     console.log("%s hp: %s/%s", senderCharacter.name, senderCharacter.hp, senderCharacter.maxHp);
     emit AttackFinished(senderCharacter.hp, boss.hp);
+  }
+  function senderHasNFT() public view returns(bool) {
+    bool has = addressToTokenId[msg.sender] != 0;
+    return has;
   }
   function getSenderCharacter() public view gameNotOver returns(Character memory) {
     uint256 senderTokenId = addressToTokenId[msg.sender];
