@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/epic-game/static/css/main.1b79aca2.css",
+    "main.js": "/epic-game/static/js/main.b4537b2c.js",
+    "static/js/787.c4e7f8f9.chunk.js": "/epic-game/static/js/787.c4e7f8f9.chunk.js",
+    "index.html": "/epic-game/index.html",
+    "main.1b79aca2.css.map": "/epic-game/static/css/main.1b79aca2.css.map",
+    "main.b4537b2c.js.map": "/epic-game/static/js/main.b4537b2c.js.map",
+    "787.c4e7f8f9.chunk.js.map": "/epic-game/static/js/787.c4e7f8f9.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.1b79aca2.css",
+    "static/js/main.b4537b2c.js"
+  ]
+}
